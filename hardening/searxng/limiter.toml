@@ -1,0 +1,19 @@
+# Limiter / bot detection. Requires valkey (SEARXNG_REDIS_URL) and the limiter
+# enabled. nginx.conf passes the real client IP in X-Forwarded-For (one hop).
+[real_ip]
+x_for = 1
+ipv4_prefix = 32
+ipv6_prefix = 48
+
+[botdetection.ip_limit]
+filter_link_local = false
+# link_token adds a per-session token check that blocks naive scrapers that
+# only fetch /search. Needs static_use_hash and does not break normal browsers.
+link_token = true
+
+[botdetection.ip_lists]
+block_ip = []
+pass_ip = [
+  # '203.0.113.10/32',   # your own IP, unlimited access
+]
+pass_searxng_org = false
