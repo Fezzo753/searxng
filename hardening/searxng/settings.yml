@@ -1,0 +1,45 @@
+# Minimal hardened settings overlay. Everything not listed inherits upstream
+# defaults (searx/settings.yml). Values marked ENV are set from compose/.env.
+use_default_settings: true
+
+general:
+  debug: false                 # never true in production: leaks tracebacks
+  instance_name: "SearXNG"
+  enable_metrics: false        # /stats and /stats/errors reveal engine health to anyone
+  donation_url: false
+
+server:
+  # secret_key, base_url, limiter, public_instance, image_proxy: ENV
+  method: "POST"               # queries not in URL/referrer/CDN logs
+  http_protocol_version: "1.1"
+  default_http_headers:
+    X-Content-Type-Options: nosniff
+    X-Download-Options: noopen
+    X-Robots-Tag: noindex, nofollow
+    Referrer-Policy: no-referrer
+
+ui:
+  static_use_hash: true
+  query_in_title: false
+
+search:
+  safe_search: 0
+  autocomplete: ""             # autocomplete sends every keystroke to a third party
+  formats: [html]              # drop json/csv/rss unless you need the API; they are scraper magnets
+
+outgoing:
+  request_timeout: 3.0
+  max_request_timeout: 10.0
+  pool_connections: 100
+  pool_maxsize: 20
+  enable_http2: true
+  # proxies / source_ips: route upstream requests through a VPN or proxy if you
+  # do not want engines to see your Vultr IP.
+
+enabled_plugins:
+  - 'Hash plugin'
+  - 'Self Information'
+  - 'Tracker URL remover'
+  - 'Ahmia blacklist'
+  - 'Hostnames plugin'
+  - 'Open Access DOI rewrite'
